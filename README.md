@@ -1,32 +1,24 @@
 # Data Science
-Introdução às ferramentas básicas de Ciência de Dados.
+Algoritmo K-Nearest Neighboars (KNN)
 
-## Utilização do Google Colab
-Link: https://colab.research.google.com/?utm_source=scs-index
-> Esta é uma opção para quem deseja fazer uso de um ambiente de desenvolvimento como o **Jupyter Notebook**, porém sem a necessidade de instalação.
+## Introdução
+Utilizado tanto em modelos de classificação quanto de regressão, esse algoritmo avalia a distância entre pontos para sua classificação.
 
-**Obs: se estiver utilizando o **Google Colab** e precisar fazer o *upload* de um *Dataset*, esse arquivo deve ser colocado no *diretório content*.**
+## Características
+1. Aprendizado baseado em Instâncias: instâncias brutas de treinamento são usadas para as previsões
+2. Aprendizado preguiçoso: todo o fluxo ocorre apenas no momento da previsão. Não há aprendizado do modelo.
+3. Não paramétrica: sem suposições acerca do problema.
 
-## Instalação do Anaconda no ambiente WSL2 (Ubuntu)
-Referência: https://gist.github.com/kauffmanes/5e74916617f9993bc3479f401dfec7da
+## Como o algoritmo funciona
+![image](https://user-images.githubusercontent.com/39681960/200093456-da5a711e-34c2-46e8-be22-7c460b2f5599.png)
 
-> 1. Repositório das versões do Anaconda: https://repo.continuum.io/archive
-> 2. Rode o comando: wget https://repo.continuum.io/archive/[YOUR VERSION]
-> 3. Instale o *Anaconda* via comando: $ bash Anaconda[YOUR VERSION].sh
-> 4. Aperte *ENTER* para a licença ser apresentada, aperte *ENTER* até a última linha da licença e confirme a inclusão da pasta do Anaconda no *PATH* do sistema
-> 5. Se já tiver o *VS Code* instalado, negue essa opção de instalação
-> 6. Com o *Anaconda* instalado, feche o terminal e abra um novo. 
-> 7. Digite o comando **which python** para que o sistema mostre o **caminho onde o Anaconda foi instalado**
-> 8. Rode o *Jupyter Notebook* sem a opção automática de abrir o navegador, através do comando: **jupyter notebook --no-browser**
-> 9. Abra o *Jupyter Notebook* através da *URL* que será apresentada no *terminal*
+Baseado na imagem acima, vemos um elemento não classificado em meio aos demais elementos já classificados em vermelhos e verdes. De acordo com o algoritmo KNN, precisamos avaliar a vizinha do elemento que queremos classificar de modo a identificar quais as classes mais próximas ao elemento. Assim, definimos a quantidade de elementos (K) que iremos analisar, por exemplo:
+1. Se K = 3, o elemento será classificado como verde pois há dois elementos verdes e um vermelho mais próximos a ele;
+2. Se k = 7, o elemento será classificado como vermelho pois agora há quatro elementos vermelhos e apenas três verdes mais próximos a ele.
 
-O Anaconda fornece muitas facilidades através de sua instalação, entre elas:
-1. *Jupyter Notebook* como **IDE**
-2. Centenas de bibliotecas como: **pandas, numpy, matplotlib.pyplot, seaborn, plotly.express** etc.
-
-### Utilização de comandos do *terminal* através do *Jupyter Notebook*:
-```
-!pip install --upgrade pip
-```
-> O comando acima atualiza o *pip* para a última versão disponível. Isso deveria ser feito via *terminal* mas com a utilização do *símbolo de exclamação* (**!**) no início do comando, o *Jupyter Notebook* entende que se trata de um comando do *Sistema Operacional*.
+### Overfitting x Underfitting
+- Overfitting: desempenho excelente nos treinamentos mas ruim nos testes (desempenho ruim quando submetido a novos dados);
+> Quando K é muito pequeno.
+- Underfitting: desempenho ruim no treinamento de modo que os testes nem acontecem.
+> Quando k é muito grande.
 
