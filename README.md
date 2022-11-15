@@ -92,6 +92,13 @@ import seaborn as sns
 sns.boxplot(ratings.avaliacao)
 ```
  ![image](https://user-images.githubusercontent.com/39681960/201947398-f9cc640f-1d33-4b53-bb16-c02b101c46cc.png)
+ 
+ Obs: existe um problema em relação à versão que o Google Colab nos fornece do Seaborn. Por se tratar de uma versão desatualizada e sem alguns métodos importantes, é importante que realizemos a atualização da versão para alguma superior ou igual à 0.9.0:
+ ```
+ !pip install seaborn==0.9.0
+ ```
+> É importante realizar o RESTART do notebook e a execução de todos os passos realizados para que o Google Colab possa atualizar de fato a versão.
+
 
 ## Explorando novo DataFrame 
 1. Upload do arquivo movies.csv para a máquina virtual do Google Colab
@@ -171,5 +178,59 @@ sns.boxplot(y=media_por_filme)
     > Exemplo: Consumo de energia
     - **Discretas**: não é possível ter 2.5 avaliações de um filme. Ou ele está avaliado ou não está.
     > Exemplo: Quantidade de avaliações de um filme 
+
+## Importação de um novo arquivo csv de filmes
+Link: https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata
+
+Esse é um arquivo com muito mais variáveis do que o que estávamos analisando anteriormente: **budget**, **genres**, **homepage**, **id**, **keywords**, **original_language**, **original_title**, **overview**, **popularity**, **production_companies**, **production_countries**, **release_date**, **revenue**, **runtime**, **spoken_languages**, **status**, **tagline**, **title**, **vote_average**, **vote_count**
+
+Vamos, primeiramente, verificar quais os diferentes idiomas de filmes que existem:
+```
+tmdb_movies.original_language.unique()
+```
+Vamos contar quantos filmes existem em cada língua:
+```
+tmdb_movies.original_language.value_counts()
+```
+![image](https://user-images.githubusercontent.com/39681960/202036731-d2e4bca0-a6aa-43dd-8289-b1e25dcce18b.png)
+> Perceba que são apresentadas duas colunas visualmente mas, na verdade, o que temos é um tipo Series, ou seja, apenas uma coluna de valores que é a quantidade de filmes em determinada língua. A coluna que vemos, referente às diferentes línguas, na verdade, funciona como um índice.
+```
+tmdb_movies.original_language.value_counts().index
+```
+```
+tmdb_movies.original_language.value_counts().values
+```
+Para transformar o objeto Series em um DataFrame, usamos o método to_frame():
+```
+tmdb_movies.original_language.value_counts().to_frame()
+```
+Para que o novo dataframe contenha duas colunas, utilizamos o método reset_index():
+```
+tmdb_movies.original_language.value_counts().to_frame().reset_index()
+```
+
+Os nomes das colunas, nesse caso, é dado automaticamente como index e original_language. Vamos criar uma variável para receber o dataframe e alterar o nome de suas colunas:
+```
+count_movie_language = tmdb_movies.original_language.value_counts().to_frame().reset_index()
+count_movie_language.columns = ["lingua","quantidade_filmes"]
+```
+Vamos plotar um gráfico de barras para reproduzir visualmente as informações acima:
+```
+sns.barplot(x="lingua", y="quantidade_filmes", data = count_movie_language)
+```
+> Da maneira como foi feita a plotagem do gráfico, tivemos que executar vários passos para preparar o Dataframe para que pudesse ser plotado da maneira correta. 
+
+O Seaborn fornece alguns tipos de gráficos que conseguem realizar a mesma função a partir de um único comando, como é o caso do gráfico catplot:
+```
+sns.catplot(x = 'original_language', kind='count', data = tmdb_movies)
+```
+> Perceba que utilizamos o Dataframe original, nem foi necessário preparar os dados. Apenas informamos que o tipo de catplot que queríamos era do tipo "count", ou seja, iria realizar a contagem de original_language no eixo y.
+
+### Data Visualization
+Faça com que o seu gráfico passe a mensagem clara que você deseja.
+Obs: gráfico de pizza (em inglês, pie) só é encontrado no Matplotlib mas não é recomendada sua utilização.
+
+
+
 
 
