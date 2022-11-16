@@ -229,8 +229,78 @@ sns.catplot(x = 'original_language', kind='count', data = tmdb_movies)
 ### Data Visualization
 Faça com que o seu gráfico passe a mensagem clara que você deseja.
 Obs: gráfico de pizza (em inglês, pie) só é encontrado no Matplotlib mas não é recomendada sua utilização.
+Apenas para conhecimento:
+```
+plt.pie(count_movie_language.quantidade_filmes, labels = count_movie_language.lingua)
+```
 
+No caso do nosso arquivo, tem filmes de várias línguas mas o inglês é majoritário. Dessa forma, podemos comparar a quantidade de filmes em inglês com o restante das línguas. Vamos separar esses dados:
+1. Contagem por língua:
+```
+count_by_language = tmdb_movies.original_language.value_counts()
+print(count_by_language)
+```
+2. Verificando apenas a quantidade de filmes em inglês e armazene em uma variável:
+```
+count_english_movies = count_by_language.loc.en
+```
+3. Verificando a quantidade de filmes no total:
+```
+count_general_languages = count_by_language.sum()
+```
+4. Verificando a quantidade de filmes no restante das línguas:
+```
+count_other_languages = count_general_languages - count_english_movies
+```
 
+Vamos plotar esses dados em um novo gráfico:
+1. Primeiramente, vamos criar um dicionário do Python com os dados:
+```
+dados = {
+  'lingua': ['ingles', 'outros'],
+  'total': [count_english_movies, count_other_languages]
+}
+dados = pd.DataFrame(dados)
+```
+> a variável **dados** que primeiramente armazenava um dicionário, em seguida, passou a armazenar um dataframe.
 
+2. Vamos printar o gráfico de barras de nossas informações:
+```
+sns.barplot(x = 'lingua', y = 'total', data = dados)
+```
+Veja que o gráfico de barras apresenta uma história bem clara da mensagem que se quer passar:
+![image](https://user-images.githubusercontent.com/39681960/202054569-80c46e1a-de35-4f57-9596-9b70bf6c3809.png)
+> O gráfico mostra claramente a discrepância entre os filmes onde a língua inglesa é a oficial e os filmes onde outras línguas são as oficiais.
 
+Vamos, agora, criar um gráfico de barras apenas para o restante das línguas, fora o inglês:
+1. Realizar uma query com o restante das línguas, contando quantos filmes para cada língua:
+```
+total_por_lingua_de_outros_filmes = tmdb_movies.query("original_language != 'en' ").original_language.value_counts()
+```
+2. Criar um dataframe dos filmes com língua diferente do inglês:
+```
+filmes_sem_lingua_original_em_ingles = tmdb_movies.query("original_language != 'en' ")
+```
+3. Por fim, vamos usar o catplot para criar o gráfico de barras rapidamente:
+```
+sns.catplot(x = "original_language", kind="count", data = filmes_sem_lingua_original_em_ingles)
+```
+![image](https://user-images.githubusercontent.com/39681960/202056367-aa295b4b-0ada-4f4f-a168-6cd66c6d38a0.png)
 
+Agora que temos o gráfico de barras das outras línguas, vamos melhorar a visualização desse gráfico:
+1. O gráfico está muito pequeno, com as barras muito coladas e desperdiçando um espaço que poderia ser utilizado na tela. 
+> Seria o caso de usarmos o Matplotlib.pyplot para aumentar a escala de visualização porém o gráfico catplot que estamos utilizando não enxergará as configurações que fizermos no pyplot, porque esse método trabalha em mais alto nível e, desta forma, possui seus próprios parâmetros de configuração de um gráfico.
+  - O parâmetro *aspect* será o responsável por aumentar o gráfico:
+``` 
+sns.catplot(x = "original_language", kind="count", data = filmes_sem_lingua_original_em_ingles, aspect = 2)
+```
+2. Os dados não estão seguindo uma ordem de apresentação, da língua com maior quantidade de filmes para a língua com menos, por exemplo. Nesse caso, podemos usar o parâmetro order e passar o índice de total_por_lingua_de_outros_filmes que já estava ordenada:
+``` 
+sns.catplot(x = "original_language", kind="count", data = filmes_sem_lingua_original_em_ingles, aspect = 2, order = total_por_lingua_de_outros_filmes.index)
+```
+3. Por fim, vamos alterar a paleta de cores de nosso gráfico com o parâmetro *pallete*:
+```
+sns.catplot(x = "original_language", kind="count", data = filmes_sem_lingua_original_em_ingles, aspect = 2, order = total_por_lingua_de_outros_filmes.index, palette = "GnBu_d")
+```
+![image](https://user-images.githubusercontent.com/39681960/202059889-f1ca8d08-e3fe-4d07-9ba9-59ac35cd88bf.png)
+> Obtemos, assim, uma melhor apresentação do gráfico.
